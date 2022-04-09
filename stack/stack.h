@@ -2,6 +2,7 @@
 #define _STACk_H_
 
 #include <stddef.h>
+#include <dstruct_funcs.h>
 
 typedef struct stack_ stack_t;
 

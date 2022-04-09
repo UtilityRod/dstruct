@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <sys/types.h>
+#include <dstruct_funcs.h>
 
 // Circular Linked List
 typedef struct circular_list_ circular_list_t;

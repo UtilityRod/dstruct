@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 set ( DIRECTORIES
+      ${CMAKE_CURRENT_SOURCE_DIR}
       ${CMAKE_CURRENT_SOURCE_DIR}/linked_list/
       ${CMAKE_CURRENT_SOURCE_DIR}/queue/
       ${CMAKE_CURRENT_SOURCE_DIR}/stack/

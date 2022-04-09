@@ -2,6 +2,7 @@
 #define _HASH_TABLE_H_
 
 #include <stddef.h>
+#include <dstruct_funcs.h>
 
 typedef struct hash_table hash_table_t;
 typedef int (*hash_function_f)(void * arg);

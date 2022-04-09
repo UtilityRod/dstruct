@@ -2,6 +2,7 @@
 #define _QUEUE_H_
 
 #include <stddef.h>
+#include <dstruct_funcs.h>
 
 typedef struct queue_ queue_t;
 

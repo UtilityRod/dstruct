@@ -2,6 +2,7 @@
 #define _BINARY_SEARCH_TREE_H_
 
 #include <stddef.h>
+#include <dstruct_funcs.h>
 
 typedef struct search_tree_ search_tree_t;
 
