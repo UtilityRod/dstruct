@@ -16,10 +16,13 @@ struct heap
     size_t filled;
 };
 
-typedef enum {HEAP_NULL, KEY_NULL, DATA_NULL, ALLOCATION_ERROR, OK} error_t;
+typedef enum {HEAP_NULL, KEY_NULL, DATA_NULL, ALLOCATION_ERROR, OK, HEAP_EMPTY} error_t;
 
-static void heapify(heap_t * heap, element_t * element);
+static void heapify_insert(heap_t * heap, element_t * element);
+static void heapify_extract(heap_t * heap, element_t * element);
 static element_t * get_parent(element_t ** data_array, size_t child_index);
+static element_t * get_lchild(heap_t * heap, size_t idx);
+static element_t * get_rchild(heap_t * heap, size_t idx);
 static void swap_nodes(element_t ** data_array, size_t parent_idx, size_t child_idx);
 
 heap_t * heap_create(size_t size, compare_f compare)
@@ -103,7 +106,7 @@ int heap_insert(heap_t * heap, void * key, void * data)
         element->data = data;
         element->idx = heap->filled;
         heap->data_array[element->idx] = element;
-        heapify(heap, element);
+        heapify_insert(heap, element);
         heap->filled++;
     }
     
@@ -118,7 +121,32 @@ void heap_print(heap_t * heap, print_f print)
     }
 }
 
-static void heapify(heap_t * heap, element_t * element)
+void * heap_extract(heap_t * heap, destroy_f destroy_key)
+{
+    if ((NULL == heap) || (0 == heap->filled))
+    {
+        return NULL;
+    }
+
+    element_t * return_element = heap->data_array[0];
+    element_t * new_root = heap->data_array[heap->filled - 1];
+    heap->data_array[heap->filled - 1] = NULL;
+    new_root->idx = 0;
+    heap->data_array[0] = new_root;
+    heapify_extract(heap, new_root);
+
+    if (destroy_key != NULL)
+    {
+        destroy_key(return_element->key);
+    }
+
+    void * return_data = return_element->data;
+    free(return_element);
+    heap->filled--;
+    return return_data;
+}
+
+static void heapify_insert(heap_t * heap, element_t * element)
 {
     for (;;)
     {
@@ -145,20 +173,67 @@ static void heapify(heap_t * heap, element_t * element)
     
 }
 
+static void heapify_extract(heap_t * heap, element_t * element)
+{
+    for (;;)
+    {
+        element_t * max_child = NULL;
+        element_t * lchild = get_lchild(heap, element->idx);
+        if (lchild != NULL)
+        {
+            // If there is a left child mark it as the max originally
+            max_child = lchild;
+        }
+
+        element_t * rchild = get_rchild(heap, element->idx);
+        if (rchild != NULL)
+        {
+            // If there is a right child, there must be a left child
+            // per the rules of a array heap, assume there is a left child
+            // Check to see which child is larger between the left and the right
+            int comparison = heap->compare(rchild->data, max_child->data); 
+            if (comparison < 0)
+            {
+                // Right child is larger than left child.
+                max_child = rchild;
+            }
+        }
+
+        if (max_child != NULL)
+        {
+            int comparison = heap->compare(max_child->data, element->data);
+            if (comparison < 0)
+            {
+                swap_nodes(heap->data_array, element->idx, max_child->idx);
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
 static element_t * get_parent(element_t ** data_array, size_t child_index)
 {
     int parent_index = (child_index - 1) / 2;
     return data_array[parent_index];
 }
 
-static int get_lchild_index(int parent_index)
+static element_t * get_lchild(heap_t * heap, size_t idx)
 {
-    return (2 * parent_index) + 1;
+    int child_idx = (2 * idx) + 1;
+    return child_idx >= heap->filled ? NULL : heap->data_array[child_idx];
 }
 
-static int get_rchild_index(int parent_index)
+static element_t * get_rchild(heap_t * heap, size_t idx)
 {
-    return (2 * parent_index) + 2;
+    int child_idx = (2 * idx) + 2;
+    return child_idx >= heap->filled ? NULL : heap->data_array[child_idx];
 }
 
 static void swap_nodes(element_t ** data_array, size_t parent_idx, size_t child_idx)
