@@ -70,6 +70,10 @@ void table_destroy(hash_table_t * table, destroy_f value_destroy)
 
     for (size_t i = 0; i < table->size; i++)
     {
+        if (NULL == table->data_array[i])
+        {
+            continue;
+        }
         // Free all the element data find in each data array in the table.
         while (circular_get_size(table->data_array[i]) != 0)
         {
@@ -117,7 +121,7 @@ size_t table_insert(hash_table_t * table, void * key, void * value)
     }
 
     element->data = value;
-    element->hash =hash;
+    element->hash = hash;
     circular_insert(table->data_array[idx], element, FRONT);
     table->filled++;
     
@@ -139,7 +143,8 @@ void * table_search(hash_table_t * table, void * key)
     int hash = table->hash(key);
     int idx = hash % table->size;
     element_t search_element = { .hash = hash };
-    return circular_search(table->data_array[idx], &search_element);
+    element_t * element = circular_search(table->data_array[idx], &search_element);
+    return element ? element->data : NULL;
 }
 
 static int hash_compare(const void * arg1, const void * arg2)

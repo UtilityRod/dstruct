@@ -17,5 +17,7 @@ set ( SOURCES
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/hash_table.c
 )
 
+add_compile_options("-g")
+
 add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL ${SOURCES})
 target_include_directories(dstruct_shared PUBLIC ${DIRECTORIES})
