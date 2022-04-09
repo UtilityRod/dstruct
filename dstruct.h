@@ -6,5 +6,6 @@
 #include <stack.h>
 #include <binary_search_tree.h>
 #include <hash_table.h>
+#include <heap.h>
 
 #endif

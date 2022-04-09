@@ -7,6 +7,7 @@ set ( DIRECTORIES
       ${CMAKE_CURRENT_SOURCE_DIR}/stack/
       ${CMAKE_CURRENT_SOURCE_DIR}/binary_search_tree/
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/
+      ${CMAKE_CURRENT_SOURCE_DIR}/heap/
 )
 
 set ( SOURCES
@@ -15,6 +16,7 @@ set ( SOURCES
       ${CMAKE_CURRENT_SOURCE_DIR}/stack/stack.c
       ${CMAKE_CURRENT_SOURCE_DIR}/binary_search_tree/binary_search_tree.c
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/hash_table.c
+      ${CMAKE_CURRENT_SOURCE_DIR}/heap/heap.c
 )
 
 add_compile_options("-g")
