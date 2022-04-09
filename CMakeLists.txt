@@ -8,6 +8,7 @@ set ( DIRECTORIES
       ${CMAKE_CURRENT_SOURCE_DIR}/binary_search_tree/
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/
       ${CMAKE_CURRENT_SOURCE_DIR}/heap/
+      ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue/
 )
 
 set ( SOURCES
@@ -17,6 +18,7 @@ set ( SOURCES
       ${CMAKE_CURRENT_SOURCE_DIR}/binary_search_tree/binary_search_tree.c
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/hash_table.c
       ${CMAKE_CURRENT_SOURCE_DIR}/heap/heap.c
+      ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue/priority_queue.c
 )
 
 add_compile_options("-g")
