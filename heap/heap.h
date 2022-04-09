@@ -6,6 +6,8 @@ typedef struct heap heap_t;
 #include <stddef.h>
 #include <dstruct_funcs.h>
 
+typedef enum {HEAP_NULL = -6, KEY_NULL, DATA_NULL, ALLOCATION_ERROR, OK, HEAP_FULL} error_t;
+
 heap_t * heap_create(size_t size, compare_f compare);
 void heap_destroy(heap_t * heap, destroy_f destroy_key, destroy_f destroy_data);
 int heap_insert(heap_t * heap, void * key, void * data);

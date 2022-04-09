@@ -16,8 +16,6 @@ struct heap
     size_t filled;
 };
 
-typedef enum {HEAP_NULL, KEY_NULL, DATA_NULL, ALLOCATION_ERROR, OK, HEAP_EMPTY} error_t;
-
 static void heapify_insert(heap_t * heap, element_t * element);
 static void heapify_extract(heap_t * heap, element_t * element);
 static element_t * get_parent(element_t ** data_array, size_t child_index);
@@ -92,6 +90,10 @@ int heap_insert(heap_t * heap, void * key, void * data)
     else if (NULL == data)
     {
         return DATA_NULL;
+    }
+    else if (heap->filled == heap->size)
+    {
+        return HEAP_FULL;
     }
     else
     {
