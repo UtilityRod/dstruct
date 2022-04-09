@@ -3,8 +3,6 @@
 
 #include <stddef.h>
 
-typedef void (*destroy_f)(void * p_arg);
-typedef int (*compare_f)(const void * p_arg1, const void * p_arg2);
 typedef struct queue_ queue_t;
 
 queue_t * queue_create(compare_f compare, destroy_f destroy);

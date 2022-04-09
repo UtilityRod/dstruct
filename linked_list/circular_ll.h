@@ -5,10 +5,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <sys/types.h>
-#include <stdint.h>
-
-typedef void (*destroy_f)(void * arg);
-typedef int (*compare_f)(const void * arg1, const void * arg2);
 
 // Circular Linked List
 typedef struct circular_list_ circular_list_t;

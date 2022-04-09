@@ -3,8 +3,6 @@
 
 #include <stddef.h>
 
-typedef void (*destroy_f)(void * p_arg);
-typedef int (*compare_f)(const void * p_arg1, const void * p_arg2);
 typedef struct stack_ stack_t;
 
 stack_t * stack_create(compare_f compare, destroy_f destroy);

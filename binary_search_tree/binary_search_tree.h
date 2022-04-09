@@ -3,9 +3,6 @@
 
 #include <stddef.h>
 
-typedef void (*destroy_f)(void * arg);
-typedef int (*compare_f)(const void * arg1, const void * arg2);
-typedef void (*print_f)(void * arg);
 typedef struct search_tree_ search_tree_t;
 
 search_tree_t * search_tree_create(compare_f compare, destroy_f destroy);
