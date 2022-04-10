@@ -81,7 +81,7 @@ int heap_insert(heap_t * heap, void * key, void * data)
 
     if (NULL == heap)
     {
-        return HEAP_NULL;
+        return STRUCTURE_NULL;
     }
     else if (NULL == key)
     {
