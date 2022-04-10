@@ -85,7 +85,7 @@ int heap_insert(heap_t * heap, void * key, void * data)
     }
     else if (NULL == key)
     {
-        return KEY_NULL;
+        return KEY_ERROR;
     }
     else if (NULL == data)
     {
@@ -156,7 +156,6 @@ static void heapify_insert(heap_t * heap, element_t * element)
         {
             element_t * parent = get_parent(heap->data_array, element->idx);
             int comparison = heap->compare(parent->key, element->key);
-
             if (comparison > 0)
             {
                 // The new element is larger so swap data and key with the parent
@@ -193,7 +192,7 @@ static void heapify_extract(heap_t * heap, element_t * element)
             // If there is a right child, there must be a left child
             // per the rules of a array heap, assume there is a left child
             // Check to see which child is larger between the left and the right
-            int comparison = heap->compare(rchild->data, max_child->data); 
+            int comparison = heap->compare(rchild->key, max_child->key); 
             if (comparison < 0)
             {
                 // Right child is larger than left child.
@@ -203,7 +202,7 @@ static void heapify_extract(heap_t * heap, element_t * element)
 
         if (max_child != NULL)
         {
-            int comparison = heap->compare(max_child->data, element->data);
+            int comparison = heap->compare(max_child->key, element->key);
             if (comparison < 0)
             {
                 swap_nodes(heap->data_array, element->idx, max_child->idx);
