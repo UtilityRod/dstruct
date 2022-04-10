@@ -9,6 +9,7 @@ set ( DIRECTORIES
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/
       ${CMAKE_CURRENT_SOURCE_DIR}/heap/
       ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue/
+      ${CMAKE_CURRENT_SOURCE_DIR}/graph/
 )
 
 set ( SOURCES
@@ -19,6 +20,7 @@ set ( SOURCES
       ${CMAKE_CURRENT_SOURCE_DIR}/hash_table/hash_table.c
       ${CMAKE_CURRENT_SOURCE_DIR}/heap/heap.c
       ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue/priority_queue.c
+      ${CMAKE_CURRENT_SOURCE_DIR}/graph/graph.c
 )
 
 add_compile_options("-g")

@@ -8,5 +8,6 @@
 #include <hash_table.h>
 #include <heap.h>
 #include <priority_queue.h>
+#include <graph.h>
 
 #endif
