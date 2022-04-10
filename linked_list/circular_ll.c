@@ -16,8 +16,6 @@ struct circular_list_ {
     bool return_node;
 };
 
-typedef enum {LIST_EMPTY = -1, NOT_FOUND = -2} error_t;
-
 circular_list_t * circular_create(compare_f compare, destroy_f destroy)
 {
     circular_list_t * list = NULL;
