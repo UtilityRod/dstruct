@@ -17,8 +17,6 @@ struct hash_table
     size_t filled;
 };
 
-typedef enum {KEY_IN_TABLE = -4, TABLE_NULL, KEY_NULL, ALLOCATION_ERROR} table_error_t;
-
 static int hash_compare(const void * arg1, const void * arg2);
 
 hash_table_t * table_create(size_t size, hash_function_f hash)
