@@ -1,5 +1,6 @@
 #include <set.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 struct set
 {
@@ -101,6 +102,11 @@ void * set_remove(set_t * set, void * data)
     void * return_value = NULL;
     for (size_t i = 0; i < set->size; i++)
     {
+        if (NULL == set->array[i])
+        {
+            continue;
+        }
+
         int comparison = set->compare(data, set->array[i]);
         if (comparison == 0)
         {
@@ -110,6 +116,8 @@ void * set_remove(set_t * set, void * data)
             break;
         }
     }
+
+    return return_value;
 }
 
 bool set_contains(set_t * set, void * data)
@@ -122,7 +130,7 @@ bool set_contains(set_t * set, void * data)
     bool return_value = false;
     for (size_t i = 0; i < set->size; i++)
     {
-        if (set->array[i] == NULL)
+        if (NULL == set->array[i])
         {
             continue;
         }
@@ -131,6 +139,7 @@ bool set_contains(set_t * set, void * data)
         if (comparison == 0)
         {
             return_value =  true;
+            break;
         }
     }
 

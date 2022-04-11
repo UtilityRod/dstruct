@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
+#include <heap.h>
+#include <stdbool.h>
+#include <pathfinder.h>
 
 struct graph 
 {
@@ -17,9 +21,16 @@ typedef struct
     void * data;
 } node_t;
 
+enum {DISTANCE, PREVIOUS, VISITED, UNVISITED, SIZE};
+
 static void destroy_adj_matrix(int ** adj_matrix, uint32_t verticies);
 static int ** create_adj_matrix(uint32_t verticies);
 static int get_node_idx(graph_t * graph, void * data);
+static int setup_dijkstra_arrays(graph_t * graph, int * arrays[SIZE]);
+static void dijkstra(graph_t * graph, int start, int * arrays[SIZE]);
+static int compare_weights(const void * arg1, const void * arg2);
+static bool array_empty(int * array, uint32_t verticies);
+static int get_array_index(int * array, uint32_t verticies, int data);
 
 graph_t * graph_create(uint32_t verticies, compare_f compare)
 {
@@ -154,11 +165,17 @@ int graph_add_node(graph_t * graph, void * data)
             break;
         }
     }
+
+    graph->adj_matrix[vertex_idx][vertex_idx] = 0;
     
     for (uint32_t i = 0; i < graph->verticies; i++)
     {
-        graph->adj_matrix[i][vertex_idx] = 0;
-        graph->adj_matrix[vertex_idx][i] = 0;
+        if (graph->adj_matrix[i][i] != -1)
+        {
+            graph->adj_matrix[i][vertex_idx] = 0;
+            graph->adj_matrix[vertex_idx][i] = 0;
+        }
+        
     }
 
     return OK;
@@ -214,6 +231,7 @@ int graph_update_edge(graph_t * graph, void * vertex1, void * vertex2, uint32_t 
         else
         {
             graph->adj_matrix[vertex1_idx][vertex2_idx] = weight;
+            graph->adj_matrix[vertex2_idx][vertex1_idx] = weight;
         }
 
     }
@@ -290,6 +308,18 @@ void graph_print_adj_matrix(graph_t * graph)
         }
         printf("\n");
     }
+}
+
+int graph_get_path_weight(graph_t * graph, void * start, void * end)
+{
+    pathfinder_t * pathfinder = pathfinder_create(graph->filled);
+    pathfinder_load_matrix(pathfinder, graph->adj_matrix);
+    int start_index = get_node_idx(graph, start);
+    pathfinder_find_paths(pathfinder, start_index);
+    int end_index = get_node_idx(graph, end);
+    int path_weight = pathfinder_get_path_weight(pathfinder, end_index);
+    pathfinder_destroy(pathfinder);
+    return path_weight;
 }
 
 static int ** create_adj_matrix(uint32_t verticies)

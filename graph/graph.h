@@ -15,5 +15,6 @@ int graph_update_edge(graph_t * graph, void * vertex1, void * vertex2, uint32_t 
 int graph_remove_edge(graph_t * graph, void * vertex1, void * vertex2);
 uint32_t graph_get_edge(graph_t * graph, void * vertex1, void * vertex2);
 void graph_print_adj_matrix(graph_t * graph);
+int graph_get_path_weight(graph_t * graph, void * start, void * end);
 
 #endif
