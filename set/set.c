@@ -1,9 +1,11 @@
 #include <set.h>
+#include <stdlib.h>
 
 struct set
 {
     void ** array;
     size_t size;
+    size_t filled;
     compare_f compare;
 };
 
@@ -39,6 +41,12 @@ void set_destroy(set_t * set, destroy_f destroy)
         return;
     }
 
+    if (NULL == set->array)
+    {
+        free(set);
+        return;
+    }
+
     if (destroy != NULL)
     {
         for (size_t i = 0; i < set->size; i++)
@@ -50,6 +58,7 @@ void set_destroy(set_t * set, destroy_f destroy)
         }
     }
 
+    free(set->array);
     free(set);
 }
 
@@ -74,6 +83,7 @@ int set_add(set_t * set, void * data)
         {
             set->array[i] = data;
             return_value = OK;
+            set->filled++;
             break;
         }
     }
@@ -96,6 +106,8 @@ void * set_remove(set_t * set, void * data)
         {
             return_value =  set->array[i];
             set->array[i] = NULL;
+            set->filled--;
+            break;
         }
     }
 }
@@ -110,11 +122,26 @@ bool set_contains(set_t * set, void * data)
     bool return_value = false;
     for (size_t i = 0; i < set->size; i++)
     {
+        if (set->array[i] == NULL)
+        {
+            continue;
+        }
+
         int comparison = set->compare(data, set->array[i]);
         if (comparison == 0)
         {
             return_value =  true;
         }
+    }
+
+    return return_value;
+}
+
+size_t set_get_size(set_t * set)
+{
+    if (set != NULL)
+    {
+        return set->filled;
     }
 }
 // END OF SOURCE
