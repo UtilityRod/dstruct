@@ -5,15 +5,16 @@
 #include <stdbool.h>
 
 struct stack_ {
-    circular_list_t * p_list;
+    circular_list_t * list;
     size_t size;
+    size_t filled;
 };
 
 stack_t * stack_create(compare_f compare, destroy_f destroy)
 {
-    stack_t * p_stack = calloc(sizeof(*p_stack), 1);
+    stack_t * stack = calloc(sizeof(*stack), 1);
 
-    if (p_stack == NULL)
+    if (stack == NULL)
     {
         // Memory allocation for stack failed
         perror("Stack creation.");
@@ -21,45 +22,118 @@ stack_t * stack_create(compare_f compare, destroy_f destroy)
     else
     {
         // Call circular linked list function to create list
-        p_stack->p_list = circular_create(compare, destroy);
+        stack->list = circular_create(compare, destroy);
     }
 
-    return p_stack;
+    return stack;
 }
 
-void stack_destroy(stack_t * p_stack)
+stack_t * stack_create_n(compare_f compare, destroy_f destroy, size_t size)
 {
-    if (p_stack && p_stack->p_list)
+    stack_t * stack = calloc(1, sizeof(*stack));
+
+    if (NULL == stack)
+    {
+        // Memory allocation failed for stack
+        return NULL;
+    }
+
+    stack->list = circular_create(compare, destroy);
+
+    if (NULL == stack->list)
+    {
+        // Memory allocation failed for stack's linked list
+        free(stack);
+        return NULL;
+    }
+
+    for (size_t i = 0; i < size; i++)
+    {
+        // Insert NULL data into the linked list as a placeholder for data later
+        void * tmp_ptr = NULL;
+        stack->size = circular_insert(stack->list, tmp_ptr, FRONT);
+    }
+
+    return stack;
+}
+
+void stack_destroy(stack_t * stack)
+{
+    if (stack && stack->list)
     {
 
-        if (p_stack->p_list)
+        if (stack->list)
         {
-            circular_destroy(p_stack->p_list);
+            circular_destroy(stack->list);
         }
 
-        free(p_stack);
+        free(stack);
     }
 }
 
-size_t stack_push(stack_t * p_stack, void * p_data)
+size_t stack_push(stack_t * stack, void * data)
 {
-    if (p_stack && p_stack->p_list)
+    if ((NULL == stack) || (NULL == stack->list))
     {
-        p_stack->size = circular_insert(p_stack->p_list, p_data, FRONT);
+        return 0;
     }
 
-    return p_stack->size;
+    // Check to see if the size of the linked list equals the amount filled in the stack
+    if (stack->size == stack->filled)
+    {
+        // Linked list size is equal to the amount filled in the stack
+        // This means there are no longer any place holders left in the linked list
+        // Insert new node into linked list
+        int tmp_size = circular_insert(stack->list, data, FRONT);
+
+        if (stack->size < tmp_size)
+        {
+            // Insert succeeded if the tmp_size is greater than the stack size
+            stack->size++;
+            stack->filled++;
+        }
+
+    }
+    else
+    {
+        // Linked list size is not equal to the amount filled in the stack
+        // This means there are placeholders available in the linked list
+        // Update a placeholder to hold data instead of insert into linked list 
+        size_t node_index = stack->size - stack->filled - 1;
+        circular_update_nth(stack->list, node_index, data);
+        // Update the amount filled in the stack
+        stack->filled++;
+    }
+
+    return stack->filled;
 }
 
-void * stack_pop(stack_t * p_stack)
+void * stack_pop(stack_t * stack)
 {
-    void * p_data = NULL;
+    void * data = NULL;
 
-    if (p_stack && p_stack->p_list)
+    if (stack && stack->list)
     {
-        p_data = circular_remove_at(p_stack->p_list, FRONT);
+        data = circular_remove_at(stack->list, FRONT);
+        stack->size--;
     }
 
-    return p_data;
+    return data;
+}
+
+void * stack_find_nth(stack_t * stack, size_t idx)
+{
+    void * return_data = NULL;
+    if ((stack != NULL) && (stack->list != NULL) && (idx < stack->size))
+    {
+        return_data = circular_get_data(stack->list, idx);
+    }
+
+    return return_data;
+}
+
+size_t stack_get_size(stack_t * stack)
+{
+    return (stack != NULL) ? stack->size : 0;
 }
 // END OF SOURCE

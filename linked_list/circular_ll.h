@@ -19,4 +19,5 @@ void * circular_get_data(circular_list_t * list, uint64_t idx);
 void * circular_remove_at(circular_list_t * p_list, location_t location);
 void circular_ll_sort(circular_list_t * p_list);
 ssize_t circular_get_size(circular_list_t * list);
+void * circular_update_nth(circular_list_t * list, size_t idx, void * data);
 #endif

@@ -266,4 +266,22 @@ ssize_t circular_get_size(circular_list_t * list)
 
     return size;
 }
+
+void * circular_update_nth(circular_list_t * list, size_t idx, void * data)
+{
+    if ((list == NULL) || (idx >= list->size))
+    {
+        return NULL;
+    }
+
+    node_t * update_node = list->head;
+    for (size_t i = 0; i < idx; i++)
+    {
+        update_node = update_node->next;
+    }
+
+    void * return_data = update_node->data;
+    update_node->data = data;
+    return return_data;
+}
 // END OF SOURCE
