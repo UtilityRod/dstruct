@@ -145,6 +145,70 @@ void * table_search(hash_table_t * table, void * key)
     return element ? element->data : NULL;
 }
 
+void * table_remove(hash_table_t * table, void * key, destroy_f destroy)
+{
+    if ((NULL == table) || (NULL == key))
+    {
+        return NULL;
+    }
+
+    // Search for the element in the circular_linked_list
+    int hash = table->hash(key);
+    int idx = hash % table->size;
+    element_t search_element = { .hash = hash };
+    element_t * element = circular_remove(table->data_array[idx], &search_element);
+
+    if (NULL == element)
+    {
+        return NULL;
+    }
+
+    void * return_data = NULL;
+    if (destroy != NULL)
+    {
+        // Destroy function was given, destroy the data and return NULL
+        destroy(element->data);
+    }
+    else
+    {
+        // Destroy function was not given, return the data back to calling function
+        return_data = element->data;
+        free(element);
+    }
+
+    return return_data;
+}
+
+void * table_find_nth(hash_table_t * table, size_t search_idx)
+{
+    if ((NULL == table) || (search_idx > table->filled) || (search_idx < 1))
+    {
+        return NULL;
+    }
+
+    size_t total_nodes = 0;
+    size_t array_index = 0;
+    for (size_t i = 0; i < table->size; i++)
+    {
+        // Go through each linked list in the table, and count how many nodes are in each
+        // linked list until you find the correct list that corresponds to the search index
+        // specified by the user
+        total_nodes += circular_get_size(table->data_array[i]);
+        if (total_nodes >= search_idx)
+        {
+            // Found the correct linked list with the corresponding search_idx
+            array_index = i;
+            break;
+        }  
+    }
+
+    // Local variables for the list to search and the node index in the list
+    circular_list_t * search_list = table->data_array[array_index];
+    size_t node_idx = (search_idx % total_nodes) + 1;
+    element_t * element = circular_get_data(search_list, node_idx);
+    return element ? element->data : NULL;
+}
+
 static int hash_compare(const void * arg1, const void * arg2)
 {
     element_t * element1 = (element_t *)arg1;

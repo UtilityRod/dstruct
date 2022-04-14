@@ -158,6 +158,7 @@ void * circular_get_data(circular_list_t * list, uint64_t idx)
         return NULL;
     }
     
+    idx--;
     node_t * current = list->head;
     for(uint64_t i = 1; i < idx; i++)
     {
@@ -165,6 +166,46 @@ void * circular_get_data(circular_list_t * list, uint64_t idx)
     }
     
     return current->data;
+}
+
+void * circular_remove(circular_list_t * list, void * data)
+{
+    if ((NULL == list) || (NULL == data))
+    {
+        return NULL;
+    }
+
+    list->return_node = true;
+    node_t * remove_node = circular_search(list, data);
+    list->return_node = false;
+
+    if (NULL == remove_node)
+    {
+        return NULL;
+    }
+
+    // Update pointers for left and right neighbors
+    remove_node->previous->next = remove_node->next;
+    remove_node->next->previous = remove_node->previous;
+
+    if (remove_node == list->head)
+    {
+        if (list->size == 1)
+        {
+            // Only 1 thing in list, zero out root node
+            list->head = NULL;
+        }
+        else
+        {
+            // Update root node if the remove node is the root node
+            list->head = remove_node->next;
+        }
+    }
+
+    list->size--;
+    void * return_data = remove_node->data;
+    free(remove_node);
+    return return_data;
 }
 
 void * circular_remove_at(circular_list_t * list, location_t location)

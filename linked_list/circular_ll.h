@@ -16,6 +16,7 @@ void circular_destroy(circular_list_t * p_list);
 size_t circular_insert(circular_list_t * p_list, void * p_data, location_t location);
 void * circular_search(circular_list_t * p_list, void * p_data);
 void * circular_get_data(circular_list_t * list, uint64_t idx);
+void * circular_remove(circular_list_t * list, void * data);
 void * circular_remove_at(circular_list_t * p_list, location_t location);
 void circular_ll_sort(circular_list_t * p_list);
 ssize_t circular_get_size(circular_list_t * list);
