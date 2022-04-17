@@ -10,5 +10,6 @@
 #include <priority_queue.h>
 #include <graph.h>
 #include <set.h>
+#include <tree.h>
 
 #endif

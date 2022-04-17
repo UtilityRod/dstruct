@@ -11,6 +11,7 @@ set ( DIRECTORIES
       ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue/
       ${CMAKE_CURRENT_SOURCE_DIR}/graph/
       ${CMAKE_CURRENT_SOURCE_DIR}/set/
+      ${CMAKE_CURRENT_SOURCE_DIR}/tree/
 )
 
 set ( SOURCES
@@ -24,6 +25,7 @@ set ( SOURCES
       ${CMAKE_CURRENT_SOURCE_DIR}/graph/graph.c
       ${CMAKE_CURRENT_SOURCE_DIR}/graph/pathfinder.c
       ${CMAKE_CURRENT_SOURCE_DIR}/set/set.c
+      ${CMAKE_CURRENT_SOURCE_DIR}/tree/tree.c
 )
 
 add_compile_options("-g")
