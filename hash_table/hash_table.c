@@ -6,7 +6,7 @@
 typedef struct 
 {
     void * data;
-    int hash;
+    uint32_t hash;
 } element_t;
 
 struct hash_table 
@@ -94,9 +94,9 @@ void table_destroy(hash_table_t * table, destroy_f value_destroy)
     return;
 }
 
-size_t table_insert(hash_table_t * table, void * key, void * value)
+size_t table_insert(hash_table_t * table, void * key, size_t key_sz, void * value)
 {
-    int hash = table->hash(key);
+    uint32_t hash = table->hash(key, key_sz);
     int idx = hash % table->size;
 
     if (NULL == table->data_array[idx])
@@ -126,7 +126,7 @@ size_t table_insert(hash_table_t * table, void * key, void * value)
     return table->filled;
 }
 
-void * table_search(hash_table_t * table, void * key)
+void * table_search(hash_table_t * table, void * key, size_t key_sz)
 {
     if (NULL == table)
     {
@@ -138,14 +138,14 @@ void * table_search(hash_table_t * table, void * key)
         return NULL;
     }
 
-    int hash = table->hash(key);
+    uint32_t hash = table->hash(key, key_sz);
     int idx = hash % table->size;
     element_t search_element = { .hash = hash };
     element_t * element = circular_search(table->data_array[idx], &search_element);
     return element ? element->data : NULL;
 }
 
-void * table_remove(hash_table_t * table, void * key, destroy_f destroy)
+void * table_remove(hash_table_t * table, void * key, size_t key_sz, destroy_f destroy)
 {
     if ((NULL == table) || (NULL == key))
     {
@@ -153,7 +153,7 @@ void * table_remove(hash_table_t * table, void * key, destroy_f destroy)
     }
 
     // Search for the element in the circular_linked_list
-    int hash = table->hash(key);
+    uint32_t hash = table->hash(key, key_sz);
     int idx = hash % table->size;
     element_t search_element = { .hash = hash };
     element_t * element = circular_remove(table->data_array[idx], &search_element);
@@ -207,6 +207,23 @@ void * table_find_nth(hash_table_t * table, size_t search_idx)
     size_t node_idx = (search_idx % total_nodes) + 1;
     element_t * element = circular_get_data(search_list, node_idx);
     return element ? element->data : NULL;
+}
+
+uint32_t jenkis_hash(void * arg, size_t length)
+{
+    char * key = (char *)arg;
+    uint32_t hash = 0;
+    for (size_t i = 0; i < length;)
+    {
+        hash += key[i++];
+        hash += hash << 10;
+        hash ^= hash >> 6;
+    }
+
+    hash += hash << 3;
+    hash ^= hash >> 11;
+    hash += hash << 15;
+    return hash;
 }
 
 static int hash_compare(const void * arg1, const void * arg2)
