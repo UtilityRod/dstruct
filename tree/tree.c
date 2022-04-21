@@ -8,23 +8,22 @@
 typedef struct node_
 {
     circular_list_t * children;
-    char * path;
     void * data;
-    char * key;
-    struct node_ * parent;
 } node_t;
 
 struct tree 
 {
     node_t * root;
-    node_t * current_node;
     bool node_return;
+    compare_f compare;
+    destroy_f destroy;
 };
 
-static int key_compare(const void * arg1, const void * arg2);
 static void destroy_node(node_t * node);
+static node_t * search_node(node_t * node, void * data, compare_f compare);
+static node_t * generate_node(tree_t * tree);
 
-tree_t * tree_create(destroy_f destroy)
+tree_t * tree_create(compare_f compare, destroy_f destroy)
 {
     tree_t * tree = calloc(1, sizeof(*tree));
 
@@ -42,30 +41,20 @@ tree_t * tree_create(destroy_f destroy)
         goto free_tree;
     }
 
-    char root_path[] = "root";
-    root->path = strdup(root_path);
-
-    if (NULL == root->path)
-    {
-        goto free_root;
-    }
-
-    root->key = root->path;
-    root->children = circular_create(key_compare, destroy);
+    root->children = circular_create(compare, destroy);
 
     if (NULL == root->children)
     {
         // Children LL could not be allocated, free root node, tree, and return back to calling function
-        goto free_root_path;
+        goto free_root;
     }
 
     // Everything allcoted properly, return back to calling function
     tree->root = root;
-    tree->current_node = root;
+    tree->compare = compare;
+    tree->destroy = destroy;
     goto return_back;
 
-free_root_path:
-    free(root->path);
 free_root:
     free(root);
 free_tree:
@@ -92,150 +81,60 @@ void tree_destroy(tree_t * tree)
     tree = NULL;
 }
 
-int tree_insert(tree_t * tree, char * path, char * key, void * data)
+int tree_insert(tree_t * tree, void * parent, void * data)
 {
-    if ((NULL == tree) || (NULL == path) || (NULL == key) || (NULL == data))
+    if ((NULL == tree) || (NULL == data))
     {
         // Data passed to function is null, cannot be null
         return DATA_ERROR;
     }
 
-    // Search for node to insert new data into
-    tree->node_return = true;
-    node_t * parent = tree_search(tree, path);
-    tree->node_return = false;
-
-    if (NULL == parent)
-    {
-        return KEY_ERROR;
-    }
-
-    // Allocat memory for new node
-    node_t * new_node = calloc(1, sizeof(*new_node));
+    node_t * new_node = generate_node(tree);
 
     if (NULL == new_node)
     {
         return ALLOCATION_ERROR;
     }
 
-    new_node->children = circular_create(key_compare, NULL);
-
-    if (NULL == new_node->children)
-    {
-        free(new_node);
-        return ALLOCATION_ERROR;
-    }
-
-    // Create new path for new node
-    size_t parent_sz = strlen(parent->path) + strlen(key) + 2;
-    new_node->path = calloc(parent_sz, sizeof(char));
-
-    if (NULL == new_node->path)
-    {
-        // Path did not allocate properly
-        circular_destroy(new_node->children);
-        free(new_node);
-        return ALLOCATION_ERROR;
-    }
-    // Add information to node struct
-    snprintf(new_node->path, parent_sz, "%s.%s", parent->path, key);
     new_node->data = data;
-    new_node->key = key;
-    new_node->parent = parent;
-    circular_insert(parent->children, new_node, FRONT);
+    int insert_check = -1;
 
-    return 0;
-}
-
-void * tree_search(tree_t * tree, char * path)
-{
-    if ((NULL == tree) || (NULL == path))
+    if (NULL == parent)
     {
-        return NULL;
+        // Insert at the root node
+        insert_check = circular_insert(tree->root->children, new_node, FRONT);
     }
-
-    char * search_str = strdup(path);
-
-    if (NULL == search_str)
+    else
     {
-        return NULL;
-    }
+        // Search for node to insert into
+        node_t * node = search_node(tree->root, parent, tree->compare);
 
-    char * token = strtok(search_str, ".");
-    node_t * current = tree->root;
-
-    if (strcmp(token, "root") != 0)
-    {
-        free(search_str);
-        return NULL;
-    }
-
-    for (;;)
-    {
-        token = strtok(NULL, ".");
-
-        if (NULL == token)
+        if (node != NULL)
         {
-            break;
+           insert_check = circular_insert(node->children, new_node, FRONT); 
         }
-
-        node_t search = {.key = token};
-        current = circular_search(current->children, &search);
-
-        if (NULL == current)
+        else
         {
-            free(search_str);
-            return NULL;
+            destroy_node(new_node);
         }
     }
 
-    free(search_str);
-    return tree->node_return ? current : current->data;
+    return insert_check;
 }
 
-char * tree_pwd(tree_t * tree)
+void * tree_search(tree_t * tree, void * data)
 {
-    char * return_str = NULL;
-    if ((tree != NULL) && (tree->current_node != NULL))
+    if ((NULL == tree) || (NULL == data))
     {
-        return_str = tree->current_node->path;
-    }
-    printf("%s\n", return_str);
-    return return_str;
-}
-
-int tree_relative_cd(tree_t * tree, char * path)
-{
-    if ((NULL == tree))
-    {
-        return DATA_ERROR;
+        return NULL;
     }
 
-    tree->node_return = true;
-    node_t * node = tree_search(tree, path);
-    tree->node_return = false;
-
-    int rv = KEY_ERROR;
-    if (node != NULL)
-    {
-        tree->current_node = node;
-        rv = OK;
-    }
-
-    return rv;
-}
-
-static int key_compare(const void * arg1, const void * arg2)
-{
-    node_t * node1 = (node_t *)arg1;
-    node_t * node2 = (node_t *)arg2;
-
-    return strcmp(node1->key, node2->key);
+    return search_node(tree->root, data, tree->compare);
 }
 
 static void destroy_node(node_t * node)
 {
-    while (circular_get_size(node->children) != 0)
+    while (circular_get_size(node->children) > 0)
     {
         node_t * current = circular_remove_at(node->children, FRONT);
         destroy_node(current);
@@ -243,8 +142,51 @@ static void destroy_node(node_t * node)
 
     circular_destroy(node->children);
     node->children = NULL;
-    free(node->path);
-    node->path = NULL;
     free(node);
+}
+
+static node_t * search_node(node_t * node, void * data, compare_f compare)
+{
+    node_t * return_node = NULL;
+    if ((node->data != NULL) && (compare(node->data, data) == 0))
+    {
+        return_node = node;
+    }
+    else
+    {
+        size_t list_sz = circular_get_size(node->children);
+        for(size_t i = 0; i < list_sz; i++)
+        {
+            node_t * current_node = circular_get_data(node->children, i + 1);
+            node_t * result = search_node(current_node, data, compare);
+            if (result != NULL)
+            {
+               return_node = result;
+               break;
+            }
+        }
+    }
+
+    return return_node;
+}
+
+static node_t * generate_node(tree_t * tree)
+{
+    node_t * node = calloc(1, sizeof(*node));
+
+    if (NULL == node)
+    {
+        return NULL;
+    }
+
+    node->children = circular_create(tree->compare, tree->destroy);
+
+    if (NULL == node->children)
+    {
+        free(node);
+        return NULL;
+    }
+
+    return node;
 }
 // END OF SOURCE
