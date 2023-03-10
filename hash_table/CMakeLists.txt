@@ -1,0 +1,5 @@
+if (HASH_TABLE)
+    message(STATUS "[+] adding Hash Table to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/hash_table.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

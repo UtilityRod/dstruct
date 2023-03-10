@@ -1,0 +1,5 @@
+if(QUEUE)
+    message(STATUS "[+] adding Queue to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/queue.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

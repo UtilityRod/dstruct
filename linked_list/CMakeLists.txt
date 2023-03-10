@@ -1,0 +1,5 @@
+if (LINKED_LIST)
+    message(STATUS "[+] adding Linked List to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/circular_ll.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

@@ -1,0 +1,5 @@
+if(TREE)
+    message(STATUS "[+] adding Tree to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tree.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

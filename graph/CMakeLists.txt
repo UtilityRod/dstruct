@@ -1,0 +1,6 @@
+if (GRAPH)
+    message(STATUS "[+] adding Graph to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/graph.c)
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pathfinder.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

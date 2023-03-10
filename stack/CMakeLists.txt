@@ -1,0 +1,5 @@
+if(STACK)
+    message(STATUS "[+] adding Stack to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stack.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

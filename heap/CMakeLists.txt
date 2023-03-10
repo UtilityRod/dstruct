@@ -1,0 +1,5 @@
+if (HEAP)
+    message(STATUS "[+] adding Heap to dstruct")
+    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/heap.c)
+    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()

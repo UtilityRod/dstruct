@@ -1,0 +1,5 @@
+function(bst_set)
+    set(BINARY_SEARCH_TREE ON PARENT_SCOPE)
+    set(STACK ON PARENT_SCOPE)
+    set(LINKED_LIST ON PARENT_SCOPE)
+endfunction()
