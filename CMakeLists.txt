@@ -15,6 +15,7 @@ set(OPTIONS_FUNCS
 )
 
 set(DSTRUCT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "")
 
 foreach(func ${OPTIONS_FUNCS})
       include(${func})

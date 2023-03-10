@@ -1,5 +1,10 @@
 if(STACK)
-    message(STATUS "[+] adding Stack to dstruct")
-    target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stack.c)
-    target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+    get_property(added_dstructs GLOBAL PROPERTY ADDED_DSTRUCTS)
+
+    if (NOT added_dstructs MATCHES "STACK")
+        set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "${added_dstructs} STACK")
+        message(STATUS "[+] adding Stack to dstruct")
+        target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stack.c)
+        target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+    endif()
 endif()
