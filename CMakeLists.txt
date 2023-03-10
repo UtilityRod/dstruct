@@ -1,19 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(dstruct C CXX)
 
-set(DIRECTORIES
-      ${CMAKE_CURRENT_SOURCE_DIR}/binary_search_tree
-      ${CMAKE_CURRENT_SOURCE_DIR}/graph
-      ${CMAKE_CURRENT_SOURCE_DIR}/hash_table
-      ${CMAKE_CURRENT_SOURCE_DIR}/heap
-      ${CMAKE_CURRENT_SOURCE_DIR}/linked_list
-      ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue
-      ${CMAKE_CURRENT_SOURCE_DIR}/queue
-      ${CMAKE_CURRENT_SOURCE_DIR}/set
-      ${CMAKE_CURRENT_SOURCE_DIR}/stack
-      ${CMAKE_CURRENT_SOURCE_DIR}/tree
-)
-
 set(OPTIONS_FUNCS
       ${CMAKE_CURRENT_SOURCE_DIR}/binary_search_tree/bst_set.cmake
       ${CMAKE_CURRENT_SOURCE_DIR}/graph/graph_set.cmake
@@ -26,6 +13,8 @@ set(OPTIONS_FUNCS
       ${CMAKE_CURRENT_SOURCE_DIR}/stack/stack_set.cmake
       ${CMAKE_CURRENT_SOURCE_DIR}/tree/tree_set.cmake
 )
+
+set(DSTRUCT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
 
 foreach(func ${OPTIONS_FUNCS})
       include(${func})
@@ -44,6 +33,19 @@ option(STACK "Include stack in dstruct" OFF)
 option(TREE "Include tree in dstruct" OFF)
 
 function(dstruct_add_structures)
+      set(DIRECTORIES
+            ${DSTRUCT_SOURCE_DIR}/binary_search_tree
+            ${DSTRUCT_SOURCE_DIR}/graph
+            ${DSTRUCT_SOURCE_DIR}/hash_table
+            ${DSTRUCT_SOURCE_DIR}/heap
+            ${DSTRUCT_SOURCE_DIR}/linked_list
+            ${DSTRUCT_SOURCE_DIR}/priority_queue
+            ${DSTRUCT_SOURCE_DIR}/queue
+            ${DSTRUCT_SOURCE_DIR}/set
+            ${DSTRUCT_SOURCE_DIR}/stack
+            ${DSTRUCT_SOURCE_DIR}/tree
+      )
+
       foreach(arg IN LISTS ARGN)
             string(TOLOWER ${arg} struct)
             if (${struct} STREQUAL binarysearchtree)
@@ -78,4 +80,3 @@ endfunction()
 
 add_library(dstruct SHARED)
 target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-dstruct_add_structures(tree)
