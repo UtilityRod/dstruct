@@ -79,7 +79,7 @@ function(dstruct_add_structures)
       endforeach()
 endfunction()
 
-if (NOT dstruct)
+if (NOT TARGET dstruct)
       add_library(dstruct SHARED)
 endif()
 target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
