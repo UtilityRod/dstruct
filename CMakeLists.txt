@@ -15,7 +15,12 @@ set(OPTIONS_FUNCS
 )
 
 set(DSTRUCT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
-set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "")
+
+
+if (NOT TARGET dstruct)
+      add_library(dstruct SHARED)
+      set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "")
+endif()
 
 foreach(func ${OPTIONS_FUNCS})
       include(${func})
@@ -79,7 +84,4 @@ function(dstruct_add_structures)
       endforeach()
 endfunction()
 
-if (NOT TARGET dstruct)
-      add_library(dstruct SHARED)
-endif()
 target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
