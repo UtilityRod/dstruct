@@ -1,10 +1,23 @@
-if (HEAP)
-    get_property(added_dstructs GLOBAL PROPERTY ADDED_DSTRUCTS)
+target_sources(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/heap.c
+)
 
-    if (NOT added_dstructs MATCHES "HEAP")
-        set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "${added_dstructs} HEAP")
-        message(STATUS "[+] adding Heap to dstruct")
-        target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/heap.c)
-        target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-    endif()
-endif()
+target_include_directories(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_sources(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/heap.c
+)
+
+target_include_directories(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

@@ -1,10 +1,23 @@
-if(PRIORITY_QUEUE)
-    get_property(added_dstructs GLOBAL PROPERTY ADDED_DSTRUCTS)
+target_sources(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue.c
+)
 
-    if (NOT added_dstructs MATCHES "PRIORITYQUEUE")
-        set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "${added_dstructs} PRIORITYQUEUE")
-        message(STATUS "[+] adding Priority Queue to dstruct")
-        target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue.c)
-        target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-    endif()
-endif()
+target_include_directories(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_sources(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/priority_queue.c
+)
+
+target_include_directories(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

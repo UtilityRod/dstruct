@@ -1,10 +1,23 @@
-if (LINKED_LIST)
-    get_property(added_dstructs GLOBAL PROPERTY ADDED_DSTRUCTS)
+target_sources(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/circular_ll.c
+)
 
-    if (NOT added_dstructs MATCHES "LINKEDLIST")
-        set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "${added_dstructs} LINKEDLIST")
-        message(STATUS "[+] adding Linked List to dstruct")
-        target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/circular_ll.c)
-        target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-    endif()
-endif()
+target_include_directories(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_sources(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/circular_ll.c
+)
+
+target_include_directories(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)

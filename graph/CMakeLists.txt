@@ -1,11 +1,25 @@
-if (GRAPH)
-    get_property(added_dstructs GLOBAL PROPERTY ADDED_DSTRUCTS)
+target_sources(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/graph.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/pathfinder.c
+)
 
-    if (NOT added_dstructs MATCHES "GRAPH")
-        set_property(GLOBAL PROPERTY ADDED_DSTRUCTS "${added_dstructs} GRAPH")
-        message(STATUS "[+] adding Graph to dstruct")
-        target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/graph.c)
-        target_sources(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pathfinder.c)
-        target_include_directories(dstruct PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-    endif()
-endif()
+target_include_directories(
+    dstruct_shared
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+target_sources(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/graph.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/pathfinder.c
+)
+
+target_include_directories(
+    dstruct_static
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
