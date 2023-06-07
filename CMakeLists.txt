@@ -15,13 +15,22 @@ set (
       ${CMAKE_CURRENT_SOURCE_DIR}/tree/
 )
 
+if (NOT TARGET dstruct_shared)
+      add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL)
 
-add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL)
-add_library(dstruct_static STATIC EXCLUDE_FROM_ALL)
+      foreach (DIR IN LISTS SOURCE_DIRECTORIES)
+            add_subdirectory(${DIR})
+      endforeach()
 
-foreach (DIR IN LISTS SOURCE_DIRECTORIES)
-      add_subdirectory(${DIR})
-endforeach()
+      target_include_directories(dstruct_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
 
-target_include_directories(dstruct_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(dstruct_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+if (NOT TARGET dstruct_static)
+      add_library(dstruct_static SHARED EXCLUDE_FROM_ALL)
+
+      foreach (DIR IN LISTS SOURCE_DIRECTORIES)
+            add_subdirectory(${DIR})
+      endforeach()
+
+      target_include_directories(dstruct_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
