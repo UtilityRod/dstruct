@@ -17,20 +17,17 @@ set (
 
 if (NOT TARGET dstruct_shared)
       add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL)
-
-      foreach (DIR IN LISTS SOURCE_DIRECTORIES)
-            add_subdirectory(${DIR})
-      endforeach()
-
       target_include_directories(dstruct_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 if (NOT TARGET dstruct_static)
       add_library(dstruct_static SHARED EXCLUDE_FROM_ALL)
-
-      foreach (DIR IN LISTS SOURCE_DIRECTORIES)
-            add_subdirectory(${DIR})
-      endforeach()
-
       target_include_directories(dstruct_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+
+if (TARGET dstruct_static OR TARGET dstruct_shared)
+      foreach (DIR IN LISTS SOURCE_DIRECTORIES)
+                  add_subdirectory(${DIR})
+      endforeach()
 endif()
