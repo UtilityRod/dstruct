@@ -16,11 +16,13 @@ set (
 )
 
 if (NOT TARGET dstruct_shared)
+      set(DSTRUCT_SHARED_LINKED OFF)
       add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL)
       target_include_directories(dstruct_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 if (NOT TARGET dstruct_static)
+      set(DSTRUCT_STATIC_LINKED OFF)
       add_library(dstruct_static SHARED EXCLUDE_FROM_ALL)
       target_include_directories(dstruct_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
