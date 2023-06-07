@@ -15,21 +15,17 @@ set (
       ${CMAKE_CURRENT_SOURCE_DIR}/tree/
 )
 
-if (NOT TARGET dstruct_shared)
-      add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL)
-      set_target_properties(dstruct_shared PROPERTIES DSTRUCT_SHARED_LINKED OFF)
-      target_include_directories(dstruct_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+if (TARGET dstruct_shared AND TARGET dstruct_static)
+      return()
 endif()
 
-if (NOT TARGET dstruct_static)
-      add_library(dstruct_static SHARED EXCLUDE_FROM_ALL)
-      set_target_properties(dstruct_static PROPERTIES DSTRUCT_STATIC_LINKED OFF)
-      target_include_directories(dstruct_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
+add_library(dstruct_shared SHARED EXCLUDE_FROM_ALL)
+target_include_directories(dstruct_shared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_library(dstruct_static SHARED EXCLUDE_FROM_ALL)
+target_include_directories(dstruct_static PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 
-if (TARGET dstruct_static OR TARGET dstruct_shared)
-      foreach (DIR IN LISTS SOURCE_DIRECTORIES)
-                  add_subdirectory(${DIR})
-      endforeach()
-endif()
+foreach (DIR IN LISTS SOURCE_DIRECTORIES)
+            add_subdirectory(${DIR})
+endforeach()
